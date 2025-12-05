@@ -1,0 +1,87 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 空のグラデーション -->
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B0E0E6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0F6FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 草のグラデーション -->
+    <linearGradient id="grassGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90EE90;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7CFC00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#32CD32;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 雲のパターン -->
+    <pattern id="cloudPattern" x="0" y="0" width="200" height="150" patternUnits="userSpaceOnUse">
+      <circle cx="50" cy="40" r="25" fill="white" opacity="0.7"/>
+      <circle cx="70" cy="40" r="30" fill="white" opacity="0.7"/>
+      <circle cx="90" cy="40" r="25" fill="white" opacity="0.7"/>
+      <circle cx="150" cy="60" r="20" fill="white" opacity="0.6"/>
+      <circle cx="170" cy="60" r="25" fill="white" opacity="0.6"/>
+      <circle cx="190" cy="60" r="20" fill="white" opacity="0.6"/>
+    </pattern>
+  </defs>
+  
+  <!-- 空の背景 -->
+  <rect width="1200" height="500" fill="url(#skyGradient)"/>
+  
+  <!-- 雲 -->
+  <rect width="1200" height="500" fill="url(#cloudPattern)" opacity="0.4"/>
+  
+  <!-- 追加の雲（手動配置） -->
+  <g opacity="0.6">
+    <circle cx="200" cy="100" r="40" fill="white"/>
+    <circle cx="230" cy="100" r="50" fill="white"/>
+    <circle cx="260" cy="100" r="40" fill="white"/>
+    <circle cx="600" cy="150" r="35" fill="white"/>
+    <circle cx="630" cy="150" r="45" fill="white"/>
+    <circle cx="660" cy="150" r="35" fill="white"/>
+    <circle cx="1000" cy="80" r="30" fill="white"/>
+    <circle cx="1025" cy="80" r="40" fill="white"/>
+    <circle cx="1050" cy="80" r="30" fill="white"/>
+  </g>
+  
+  <!-- 草の背景 -->
+  <rect x="0" y="500" width="1200" height="300" fill="url(#grassGradient)"/>
+  
+  <!-- 草の葉っぱ（装飾） -->
+  <g fill="#228B22" opacity="0.3">
+    <!-- 左側の草 -->
+    <path d="M 50 500 Q 60 480, 70 500 T 90 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    <path d="M 80 500 Q 90 480, 100 500 T 120 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    <path d="M 120 500 Q 130 480, 140 500 T 160 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    
+    <!-- 中央の草 -->
+    <path d="M 550 500 Q 560 480, 570 500 T 590 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    <path d="M 580 500 Q 590 480, 600 500 T 620 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    
+    <!-- 右側の草 -->
+    <path d="M 1100 500 Q 1110 480, 1120 500 T 1140 500" stroke="#228B22" stroke-width="2" fill="none"/>
+    <path d="M 1130 500 Q 1140 480, 1150 500 T 1170 500" stroke="#228B22" stroke-width="2" fill="none"/>
+  </g>
+  
+  <!-- 地面のテクスチャ -->
+  <g opacity="0.2">
+    <line x1="0" y1="500" x2="1200" y2="500" stroke="#2F4F2F" stroke-width="2"/>
+    <line x1="0" y1="550" x2="1200" y2="550" stroke="#2F4F2F" stroke-width="1"/>
+    <line x1="0" y1="600" x2="1200" y2="600" stroke="#2F4F2F" stroke-width="1"/>
+    <line x1="0" y1="650" x2="1200" y2="650" stroke="#2F4F2F" stroke-width="1"/>
+    <line x1="0" y1="700" x2="1200" y2="700" stroke="#2F4F2F" stroke-width="1"/>
+    <line x1="0" y1="750" x2="1200" y2="750" stroke="#2F4F2F" stroke-width="1"/>
+  </g>
+  
+  <!-- 太陽 -->
+  <circle cx="1050" cy="120" r="50" fill="#FFD700" opacity="0.8"/>
+  <circle cx="1050" cy="120" r="45" fill="#FFA500" opacity="0.6"/>
+  
+  <!-- 光の効果 -->
+  <g opacity="0.3">
+    <line x1="1050" y1="120" x2="900" y2="200" stroke="#FFD700" stroke-width="3"/>
+    <line x1="1050" y1="120" x2="950" y2="250" stroke="#FFD700" stroke-width="2"/>
+    <line x1="1050" y1="120" x2="1000" y2="300" stroke="#FFD700" stroke-width="2"/>
+  </g>
+</svg>
+
