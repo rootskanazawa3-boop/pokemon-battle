@@ -34,6 +34,11 @@ jobs:
       - name: Build
         run: npm run build
       
+      - name: Copy docs to dist
+        run: |
+          mkdir -p dist/docs
+          cp -r docs/* dist/docs/
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
       

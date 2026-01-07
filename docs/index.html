@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI × ゲーム開発講座 | ポケモンバトルを作ろう</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--dark);
+      color: var(--light);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      background: 
+        radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+        var(--dark);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-badge span {
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      color: #94a3b8;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-1);
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Section Styles */
+    section {
+      padding: 6rem 2rem;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1.125rem;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Steps Section */
+    .steps {
+      background: linear-gradient(180deg, var(--dark) 0%, #1e1b4b 100%);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .step-card:nth-child(1)::before { background: var(--gradient-1); }
+    .step-card:nth-child(2)::before { background: var(--gradient-3); }
+    .step-card:nth-child(3)::before { background: var(--gradient-2); }
+    .step-card:nth-child(4)::before { background: var(--gradient-4); }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-card:nth-child(1) .step-number { background: var(--gradient-1); }
+    .step-card:nth-child(2) .step-number { background: var(--gradient-3); }
+    .step-card:nth-child(3) .step-number { background: var(--gradient-2); }
+    .step-card:nth-child(4) .step-number { background: var(--gradient-4); }
+
+    .step-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .step-desc {
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+
+    .step-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .step-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Features Section */
+    .features {
+      background: var(--dark);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: scale(1.02);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      background: var(--gradient-1);
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-desc {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    /* Timeline Section */
+    .timeline {
+      background: linear-gradient(180deg, #1e1b4b 0%, var(--dark) 100%);
+    }
+
+    .timeline-container {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .timeline-item:nth-child(odd) {
+      flex-direction: row-reverse;
+    }
+
+    .timeline-content {
+      width: 45%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .timeline-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--gradient-1);
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .timeline-time {
+      font-size: 0.875rem;
+      color: var(--secondary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    /* Demo Section */
+    .demo {
+      background: var(--dark);
+      text-align: center;
+    }
+
+    .demo-frame {
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .demo-frame img {
+      width: 100%;
+      display: block;
+    }
+
+    .demo-browser-bar {
+      background: #1e293b;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-browser-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .demo-browser-dot:nth-child(1) { background: #ef4444; }
+    .demo-browser-dot:nth-child(2) { background: #eab308; }
+    .demo-browser-dot:nth-child(3) { background: #22c55e; }
+
+    .demo-browser-url {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      margin-left: 1rem;
+      font-size: 0.875rem;
+      color: #94a3b8;
+    }
+
+    .demo-content {
+      background: linear-gradient(135deg, #E0F6FF 0%, #B0E0E6 50%, #90EE90 100%);
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .demo-placeholder {
+      text-align: center;
+      color: #1e293b;
+    }
+
+    .demo-placeholder-icon {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+    }
+
+    .demo-placeholder-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* CTA Section */
+    .cta {
+      background: var(--gradient-1);
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .cta h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .cta .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .cta .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background: #0a0a0f;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    footer p {
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .timeline-container::before {
+        left: 20px;
+      }
+
+      .timeline-item,
+      .timeline-item:nth-child(odd) {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 50px;
+      }
+
+      .timeline-content {
+        width: 100%;
+      }
+
+      .timeline-dot {
+        left: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span>🤖 AI × プログラミング</span>
+    </div>
+    <h1>AI × ゲーム開発講座</h1>
+    <p class="hero-subtitle">AIの力を借りてポケモンバトルゲームを作り、<br>世界に公開しよう！</p>
+    <div class="hero-cta">
+      <a href="https://rootskanazawa3-boop.github.io/pokemon-battle/" class="btn btn-primary" target="_blank">
+        🎮 完成版を見る
+      </a>
+      <a href="#steps" class="btn btn-secondary">
+        📚 カリキュラムを見る
+      </a>
+    </div>
+  </section>
+
+  <!-- Steps Section -->
+  <section class="steps" id="steps">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Curriculum</span>
+        <h2 class="section-title">4ステップで完成</h2>
+        <p class="section-desc">AIを活用した効率的な学習で、たった8時間でゲームを公開できます</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3 class="step-title">AIで設計書作成</h3>
+          <p class="step-desc">AIにプロンプトを送って設計書を生成。ゲームの仕様を明確にします。</p>
+          <div class="step-tags">
+            <span class="step-tag">ChatGPT</span>
+            <span class="step-tag">プロンプト設計</span>
+            <span class="step-tag">2時間</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3 class="step-title">AIで環境構築</h3>
+          <p class="step-desc">AIの助けを借りて開発環境を構築。エラーもAIに質問して解決。</p>
+          <div class="step-tags">
+            <span class="step-tag">Vite</span>
+            <span class="step-tag">React</span>
+            <span class="step-tag">2時間</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3 class="step-title">ライブコーディング</h3>
+          <p class="step-desc">講師と一緒にコードを書く。AIの補助を受けながら実装します。</p>
+          <div class="step-tags">
+            <span class="step-tag">TypeScript</span>
+            <span class="step-tag">Cursor AI</span>
+            <span class="step-tag">2時間</span>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3 class="step-title">サーバーに公開</h3>
+          <p class="step-desc">GitHubで公開。世界中からアクセスできるURLを取得します。</p>
+          <div class="step-tags">
+            <span class="step-tag">GitHub</span>
+            <span class="step-tag">GitHub Pages</span>
+            <span class="step-tag">2時間</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Features</span>
+        <h2 class="section-title">この講座の特徴</h2>
+        <p class="section-desc">AIを活用した新しい学習スタイルで、効率的にスキルを身につけます</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3 class="feature-title">AI活用型学習</h3>
+          <p class="feature-desc">ChatGPTやCursor AIを使って、効率的にコードを書きます。わからないことはすぐにAIに質問できます。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3 class="feature-title">実践的なプロジェクト</h3>
+          <p class="feature-desc">ポケモンバトルゲームという具体的な目標があるので、モチベーションを保ちやすいです。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <h3 class="feature-title">公開まで完結</h3>
+          <p class="feature-desc">作ったゲームをGitHub Pagesで公開。友達や家族に見せることができます。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">👨‍💻</div>
+          <h3 class="feature-title">モダンな技術スタック</h3>
+          <p class="feature-desc">React、TypeScript、Tailwind CSSなど、現場で使われている技術を学べます。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3 class="feature-title">短期間で成果</h3>
+          <p class="feature-desc">全4回・8時間で完成。短期間で達成感を味わえるカリキュラムです。</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💡</div>
+          <h3 class="feature-title">エラー対応力</h3>
+          <p class="feature-desc">エラーが出てもAIに質問して解決。問題解決能力が身につきます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="demo">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Demo</span>
+        <h2 class="section-title">完成版デモ</h2>
+        <p class="section-desc">この講座で作成するゲームのデモです</p>
+      </div>
+
+      <div class="demo-frame">
+        <div class="demo-browser-bar">
+          <div class="demo-browser-dot"></div>
+          <div class="demo-browser-dot"></div>
+          <div class="demo-browser-dot"></div>
+          <div class="demo-browser-url">rootskanazawa3-boop.github.io/pokemon-battle/</div>
+        </div>
+        <div class="demo-content">
+          <div class="demo-placeholder">
+            <div class="demo-placeholder-icon">⚡🔥🐢🌱</div>
+            <div class="demo-placeholder-text">ポケモンバトルゲーム</div>
+            <p style="margin-top: 1rem; color: #475569;">12種類のモンスターから3体を選んでバトル！</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <a href="https://rootskanazawa3-boop.github.io/pokemon-battle/" class="btn btn-primary" target="_blank">
+          🎮 実際にプレイする
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Schedule</span>
+        <h2 class="section-title">授業の流れ</h2>
+        <p class="section-desc">各回2時間で進めます</p>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-time">第1回（2時間）</div>
+            <h4 class="timeline-title">📝 AIで設計書作成</h4>
+            <p class="timeline-desc">AIにプロンプトを送って設計書を生成。データ構造やUI構成を決定します。</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-time">第2回（2時間）</div>
+            <h4 class="timeline-title">⚙️ AIで環境構築</h4>
+            <p class="timeline-desc">Vite + React + TypeScriptの環境を構築。AIの助けを借りてセットアップします。</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-time">第3回（2時間）</div>
+            <h4 class="timeline-title">💻 ライブコーディング</h4>
+            <p class="timeline-desc">講師と一緒にコードを書きます。UI、バトルロジック、状態管理を実装。</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-content">
+            <div class="timeline-time">第4回（2時間）</div>
+            <h4 class="timeline-title">🚀 サーバーに公開</h4>
+            <p class="timeline-desc">GitHubにプッシュしてGitHub Pagesで公開。世界中からアクセス可能に！</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="container">
+      <h2>さあ、始めよう！</h2>
+      <p>AIの力を借りて、あなただけのゲームを作ろう</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="https://rootskanazawa3-boop.github.io/pokemon-battle/" class="btn btn-secondary" target="_blank">
+          🎮 完成版を見る
+        </a>
+        <a href="https://github.com/rootskanazawa3-boop/pokemon-battle" class="btn btn-secondary" target="_blank">
+          📂 GitHubリポジトリ
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 AI × ゲーム開発講座 | <a href="https://github.com/rootskanazawa3-boop/pokemon-battle">GitHub</a></p>
+  </footer>
+</body>
+</html>
+
