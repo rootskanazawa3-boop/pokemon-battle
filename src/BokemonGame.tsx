@@ -618,7 +618,7 @@ const BokemonGame: React.FC = () => {
                   <BokemonSprite 
                     bokemon={enemyBokemon} 
                     isEnemy={true}
-                    isAttacking={attackAnimation === 'enemy'}
+                    isAttacking={attackAnimation}
                   />
                 </div>
                 <BokemonCard bokemon={enemyBokemon} isEnemy={true} />
@@ -633,7 +633,7 @@ const BokemonGame: React.FC = () => {
                   <BokemonSprite 
                     bokemon={playerBokemon} 
                     isEnemy={false}
-                    isAttacking={attackAnimation === 'player'}
+                    isAttacking={attackAnimation}
                   />
                 </div>
                 <BokemonCard bokemon={playerBokemon} isEnemy={false} />
