@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Heart, Zap, Flame, Droplet, Leaf, Bug, Ghost, Moon, Star, Wind, Mountain } from 'lucide-react';
+import { Heart, Zap, Flame, Droplet, Leaf, Bug, Ghost, Moon, Star, Wind, Mountain } from 'lucide-react';
 
 interface Bokemon {
   id: number;
@@ -424,11 +424,12 @@ const BokemonGame: React.FC = () => {
   }, [enemyBokemon?.hp, gameState]);
 
 
-  const BokemonSprite: React.FC<{ bokemon: Bokemon; isEnemy: boolean; isAttacking: boolean | null }> = ({ bokemon, isEnemy, isAttacking }) => {
+  const BokemonSprite: React.FC<{ bokemon: Bokemon; isEnemy: boolean; isAttacking: 'player' | 'enemy' | null }> = ({ bokemon, isEnemy, isAttacking }) => {
     const isFainted = bokemon.hp === 0;
+    const shouldMove = isAttacking === (isEnemy ? 'enemy' : 'player');
     return (
       <div className={`relative transition-all duration-300 ${
-        isAttacking === (isEnemy ? 'enemy' : 'player') ? (isEnemy ? 'translate-x-8' : '-translate-x-8') : ''
+        shouldMove ? (isEnemy ? 'translate-x-8' : '-translate-x-8') : ''
       }`}>
         <div className={`text-8xl ${isFainted ? 'opacity-30 grayscale' : ''}`}>
           {bokemon.emoji}
@@ -442,7 +443,7 @@ const BokemonGame: React.FC = () => {
     );
   };
 
-  const BokemonCard: React.FC<{ bokemon: Bokemon; isEnemy: boolean; isSmall?: boolean }> = ({ bokemon, isSmall }) => {
+  const BokemonCard: React.FC<{ bokemon: Bokemon; isEnemy?: boolean; isSmall?: boolean }> = ({ bokemon, isSmall }) => {
     const Icon = bokemon.icon;
     const hpPercentage = (bokemon.hp / bokemon.maxHp) * 100;
     
@@ -555,7 +556,7 @@ const BokemonGame: React.FC = () => {
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {bokemonData.map(bokemon => {
-            const isSelected = playerTeam.find(b => b.id === bokemon.id);
+            const isSelected = !!playerTeam.find(b => b.id === bokemon.id);
             return (
               <button
                 key={bokemon.id}
@@ -720,12 +721,12 @@ const BokemonGame: React.FC = () => {
         <div className="bg-white rounded-lg p-4 shadow-lg border-4 border-gray-800">
           <h3 className="font-bold mb-3 text-lg">パーティ</h3>
           <div className="space-y-3">
-            {playerTeam.map((bokemon, index) => (
+            {playerTeam.map((bokemon) => (
               <div key={bokemon.id}>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="text-3xl">{bokemon.emoji}</div>
                   <div className="flex-1">
-                    <BokemonCard bokemon={bokemon} isSmall={true} />
+                    <BokemonCard bokemon={bokemon} isSmall={true} isEnemy={false} />
                   </div>
                 </div>
                 {/* 交代ボタンは交代メニューで提供 */}
